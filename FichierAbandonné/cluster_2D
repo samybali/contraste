@@ -1,0 +1,79 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from clustering_2D import ArtishowClustering;
+
+
+class diagonale:
+    def __init__(self,data, clust1, clust2):
+        self.data = data
+        self.clust1 = clust1
+        self.clust2 = clust2
+        pass
+# Prototypes
+    def trouver_prototype_proche(self,prototypes, point):
+        """
+        Trouve le prototype le plus proche d'un point dans une liste 1D.
+
+        :param prototypes: Liste de nombres (prototypes)
+        :param point: Le point pour lequel on cherche le prototype le plus proche
+        :return: Le prototype le plus proche
+        """
+        if not prototypes:
+            raise ValueError("La liste des prototypes est vide.")
+
+        prototype_proche = min(prototypes, key=lambda p: abs(p - point))
+        return prototype_proche
+
+# Clustering
+
+    def clustering_2D(self):
+        
+        for point in data:
+            x, y=point
+            # Trouver le prototype le plus proche
+            
+            prototype_proche_x = self.trouver_prototype_proche([clust1[0], clust2[0]], x)
+            prototype_proche_y = self.trouver_prototype_proche([clust1[1], clust2[1]], y)
+            # Calculer la distance
+            distance_x = abs(prototype_proche_x - x)
+            distance_y = abs(prototype_proche_y - y)
+            
+            # Mettre le point dans le cluster correspondant
+            if distance_x < distance_y:
+                plt.scatter(x, y, color='red', label='Cluster 1' if 'Cluster 1' not in plt.gca().get_legend_handles_labels()[1] else "")
+            else:
+                plt.scatter(x, y, color='blue', label='Cluster 2' if 'Cluster 2' not in plt.gca().get_legend_handles_labels()[1] else "")
+            
+            # Mettre à jour le prototype
+            if prototype_proche_x == clust1[0]:
+                clust1[0] = (clust1[0] + x) / 2
+            else:
+                clust2[0] = (clust2[0] + x) / 2
+            if prototype_proche_y == clust1[1]:
+                clust1[1] = (clust1[1] + y) / 2
+            else:
+                clust2[1] = (clust2[1] + y) / 2
+        # Affichage des clusters
+        
+        plt.scatter(clust1[0], clust1[1], color='red', marker='x', s=100, label='Cluster 1')
+        plt.scatter(clust2[0], clust2[1], color='blue', marker='x', s=100, label='Cluster 2')
+        plt.title('Clusters 2D')
+        plt.xlabel('X-axis')
+        plt.ylabel('Y-axis')
+        plt.legend()
+        plt.show()
+    
+cluster_2D = ArtishowClustering([(10, 10), (20, 20), (35, 35)], [2, 2, 3])
+data= cluster_2D.generate_data_2D()
+datax= data[:,0]
+datay= data[:,1]
+
+# 2 clusters
+clust1=[10,10]
+clust2=[20,20]
+
+
+
+        
+diagonale=diagonale(data, clust1, clust2)
+diagonale.clustering_2D()

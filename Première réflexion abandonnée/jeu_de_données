@@ -1,0 +1,49 @@
+import numpy as np
+
+data = {
+    "Chat": 25, "Chien": 50, "Lapin": 30, "Cheval": 160, "Éléphant": 300,
+    "Girafe": 500, "Souris": 10, "Loup": 85, "Ours": 250, "Serpent": 150,
+    "Kangourou": 140, "Lion": 120, "Tigre": 110, "Panda": 90, "Dauphin": 200,
+    "Crocodile": 400, "Zèbre": 135, "Autruche": 210, "Chameau": 220, "Hippopotame": 150,
+    "Rhinocéros": 170, "Koala": 70, "Lémurien": 45, "Baleine Bleue": 2500, "Requin Blanc": 600,
+    "Aigle": 90, "Hérisson": 20, "Tortue": 50, "Pieuvre": 80, "Loutre": 75,
+    "Puma": 95, "Cobra": 180, "Perroquet": 40, "Paresseux": 60, "Hamster": 15,
+    "Phoque": 160, "Castor": 110, "Renard": 85, "Bison": 180, "Faucon": 55,
+    "Cigogne": 140, "Lynx": 95, "Moineau": 15, "Orang-outan": 130, "Gorille": 170,
+    "Pingouin": 65, "Écureuil": 30, "Canard": 50, "Lama": 140, "Tatou": 75
+}
+def contraste_michelson(x, y):
+    if x==y:
+        return 0
+    else: return abs(x - y) / (x + y )  
+
+    
+def clustering_contraste_michelson(data, seuil_contraste):
+    """Clustering hiérarchique incrémental basé sur le contraste de Michelson."""
+    clusters = []  # Liste des clusters (chaque cluster est représenté par son centre)
+    cluster_animaux = []  # Liste associant les animaux aux clusters
+
+    for animal, taille in data.items():
+        meilleur_contraste = float('inf')
+        meilleur_cluster = None
+
+        # Trouver le cluster avec le plus faible contraste
+        for i, centre in enumerate(clusters):
+            contraste = contraste_michelson(taille, centre)
+            if contraste < meilleur_contraste:
+                meilleur_contraste = contraste
+                meilleur_cluster = i
+        
+        # Vérifier si on peut ajouter l'animal à un cluster existant
+        if meilleur_contraste < seuil_contraste:
+            # Mettre à jour le centre du cluster (moyenne simple)
+            clusters[meilleur_cluster] = (clusters[meilleur_cluster] + taille) / 2
+            cluster_animaux[meilleur_cluster].append(animal)
+        else:
+            # Créer un nouveau cluster avec la taille de l'animal comme centre
+            clusters.append(taille)
+            cluster_animaux.append([animal])
+    
+    return clusters, cluster_animaux
+
+
